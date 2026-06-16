@@ -1,9 +1,64 @@
+import 'dart:async';
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
+
 import 'login_screen.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _iconScale;
+  late final Animation<double> _fade;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
+
+    _iconScale = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.0, 0.65, curve: Curves.easeOutBack),
+    );
+
+    _fade = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.35, 1.0, curve: Curves.easeIn),
+    );
+
+    _controller.forward();
+
+    _timer = Timer(const Duration(seconds: 3), () {
+      if (!mounted) return;
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => const LoginScreen(),
+        ),
+      );
+    });
+  }
+
+
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +67,6 @@ class SplashScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-
           // Background
           SizedBox(
             width: size.width,
@@ -30,8 +84,8 @@ class SplashScreen extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black.withOpacity(0.25),
-                  Colors.black.withOpacity(0.60),
+                  Colors.black.withValues(alpha: 0.25),
+                  Colors.black.withValues(alpha: 0.60),
                 ],
               ),
             ),
@@ -40,14 +94,19 @@ class SplashScreen extends StatelessWidget {
           SafeArea(
             child: Column(
               children: [
-
                 const SizedBox(height: 20),
 
-                // Logo
+                // Logo (animasi first entry)
                 Center(
-                  child: Image.asset(
-                    "assets/images/logo_splash.png",
-                    width: 140,
+                  child: FadeTransition(
+                    opacity: _fade,
+                    child: ScaleTransition(
+                      scale: _iconScale,
+                      child: Image.asset(
+                        "assets/images/logo_splash.png",
+                        width: 140,
+                      ),
+                    ),
                   ),
                 ),
 
@@ -57,7 +116,6 @@ class SplashScreen extends StatelessWidget {
                   alignment: Alignment.bottomCenter,
                   clipBehavior: Clip.none,
                   children: [
-
                     // Glass Card
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 28),
@@ -78,15 +136,14 @@ class SplashScreen extends StatelessWidget {
                             ),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(30),
-                              color: Colors.white.withOpacity(0.12),
+                              color: Colors.white.withValues(alpha: 0.12),
                               border: Border.all(
-                                color: Colors.white.withOpacity(0.12),
+                                color: Colors.white.withValues(alpha: 0.12),
                               ),
                             ),
                             child: const Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-
                                 Text(
                                   "Haii Sobat BIOCELL",
                                   textAlign: TextAlign.center,
@@ -96,9 +153,7 @@ class SplashScreen extends StatelessWidget {
                                     color: Colors.white,
                                   ),
                                 ),
-
                                 SizedBox(height: 10),
-
                                 Text(
                                   "Inovasi hijau yang mengubah limbah peternakan\n"
                                   "menjadi energi terbarukan.\n\n"
@@ -139,8 +194,7 @@ class SplashScreen extends StatelessWidget {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      const LoginScreen(),
+                                  builder: (context) => const LoginScreen(),
                                 ),
                               );
                             },
@@ -180,3 +234,5 @@ class SplashScreen extends StatelessWidget {
     );
   }
 }
+
+
