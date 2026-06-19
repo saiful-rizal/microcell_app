@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'firebase_service.dart';
+import 'device_data_service.dart';
 import 'navigation.dart';
 
 class RelayControlScreen extends StatelessWidget {

@@ -1,20 +1,13 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'control.dart';
 import 'dashboard_screen.dart';
-import 'firebase_options.dart';
-import 'firebase_service.dart';
 import 'login_screen.dart';
 import 'navigation.dart';
 import 'profile.dart';
 import 'splash_screen.dart';
 
-Future<void> main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  await AuthService.initializeGoogleSignIn();
 
   runApp(const MyApp());
 }

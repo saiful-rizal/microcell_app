@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'firebase_service.dart';
+import 'auth_service.dart';
 import 'navigation.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -112,12 +112,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _showForgotPasswordDialog() {
     final TextEditingController resetEmailController = TextEditingController();
-    
+
     showDialog(
       context: context,
       builder: (context) {
         bool isDialogLoading = false;
-        
+
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
@@ -157,7 +157,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       filled: true,
                       fillColor: const Color(0xFFF9FAFB),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 12),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
@@ -168,7 +169,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: _LoginColors.primary, width: 1.5),
+                        borderSide: const BorderSide(
+                            color: _LoginColors.primary, width: 1.5),
                       ),
                     ),
                   ),
@@ -176,7 +178,8 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               actions: [
                 TextButton(
-                  onPressed: isDialogLoading ? null : () => Navigator.pop(context),
+                  onPressed:
+                      isDialogLoading ? null : () => Navigator.pop(context),
                   child: const Text(
                     'Batal',
                     style: TextStyle(
@@ -200,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                             return;
                           }
-                          
+
                           setState(() => isDialogLoading = true);
                           try {
                             await AuthService.sendPasswordReset(email);
@@ -208,7 +211,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               Navigator.pop(context);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text('Tautan reset password berhasil dikirim ke $email'),
+                                  content: Text(
+                                      'Tautan reset password berhasil dikirim ke $email'),
                                   behavior: SnackBarBehavior.floating,
                                   backgroundColor: Colors.green,
                                 ),
@@ -219,7 +223,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               setState(() => isDialogLoading = false);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text(AuthService.readableAuthError(e)),
+                                  content:
+                                      Text(AuthService.readableAuthError(e)),
                                   behavior: SnackBarBehavior.floating,
                                   backgroundColor: Colors.redAccent,
                                 ),
@@ -271,7 +276,8 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               _buildHeader(),
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 0), // Padding dikurangi
+                padding: const EdgeInsets.fromLTRB(
+                    20, 10, 20, 0), // Padding dikurangi
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -304,7 +310,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-    Widget _buildHeader() {
+  Widget _buildHeader() {
     return Container(
       height: 160, // Tinggi Header tetap kompak
       width: double.infinity,
@@ -560,7 +566,8 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         const Expanded(child: Divider(color: Color(0xFFDCE3EA))),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8), // Padding dikurangi
+          padding:
+              const EdgeInsets.symmetric(horizontal: 8), // Padding dikurangi
           child: Text(
             _isRegister ? 'atau daftar dengan' : 'atau masuk dengan',
             style: const TextStyle(
@@ -659,7 +666,9 @@ class _LoginScreenState extends State<LoginScreen> {
               suffixIcon: suffixIcon,
               filled: true,
               fillColor: const Color(0xFFF9FAFB),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 0), // Padding vertikal 0 agar pas di height 48
+              contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 0), // Padding vertikal 0 agar pas di height 48
               border: _inputBorder(),
               enabledBorder: _inputBorder(),
               focusedBorder: _inputBorder(_LoginColors.primary),
@@ -672,8 +681,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   OutlineInputBorder _inputBorder([Color color = const Color(0xFFE5E7EB)]) {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(14), // Radius input diperkecil (16 -> 14)
-      borderSide: BorderSide(color: color, width: color == const Color(0xFFE5E7EB) ? 1 : 1.5),
+      borderRadius:
+          BorderRadius.circular(14), // Radius input diperkecil (16 -> 14)
+      borderSide: BorderSide(
+          color: color, width: color == const Color(0xFFE5E7EB) ? 1 : 1.5),
     );
   }
 }
