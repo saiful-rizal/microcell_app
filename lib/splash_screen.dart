@@ -1,23 +1,22 @@
-import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
 import 'login_screen.dart';
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+class OnboardingScreen extends StatefulWidget {
+  const OnboardingScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
+class _OnboardingScreenState extends State<OnboardingScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _iconScale;
   late final Animation<double> _fade;
-  Timer? _timer;
+  late final Animation<Offset> _slideUp;
 
   @override
   void initState() {
@@ -38,24 +37,18 @@ class _SplashScreenState extends State<SplashScreen>
       curve: const Interval(0.35, 1.0, curve: Curves.easeIn),
     );
 
+    _slideUp = Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.4, 1.0, curve: Curves.easeOutQuart),
+      ),
+    );
+
     _controller.forward();
-
-    _timer = Timer(const Duration(seconds: 3), () {
-      if (!mounted) return;
-
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => const LoginScreen(),
-        ),
-      );
-    });
   }
-
-
 
   @override
   void dispose() {
-    _timer?.cancel();
     _controller.dispose();
     super.dispose();
   }
@@ -117,7 +110,11 @@ class _SplashScreenState extends State<SplashScreen>
                   clipBehavior: Clip.none,
                   children: [
                     // Glass Card
-                    Padding(
+                    SlideTransition(
+                      position: _slideUp,
+                      child: FadeTransition(
+                        opacity: _fade,
+                        child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 28),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(30),
@@ -145,7 +142,7 @@ class _SplashScreenState extends State<SplashScreen>
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  "Haii Sobat BIOCELL",
+                                  "Hai Sobat MICROCELL",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 18,
@@ -173,11 +170,17 @@ class _SplashScreenState extends State<SplashScreen>
                         ),
                       ),
                     ),
+                  ),
+                ),
 
                     // Button
                     Positioned(
                       bottom: -32,
-                      child: Container(
+                      child: SlideTransition(
+                        position: _slideUp,
+                        child: FadeTransition(
+                          opacity: _fade,
+                          child: Container(
                         width: 74,
                         height: 74,
                         decoration: BoxDecoration(
@@ -222,7 +225,9 @@ class _SplashScreenState extends State<SplashScreen>
                         ),
                       ),
                     ),
-                  ],
+                  ),
+                ),
+              ],
                 ),
 
                 const SizedBox(height: 60),

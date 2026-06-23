@@ -32,48 +32,68 @@ class AppBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 62,
-      decoration: const BoxDecoration(
+      height: 70,
+      decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(24),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
+          ),
+        ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.center,
         children: [
-          IconButton(
-            tooltip: 'Dashboard',
-            onPressed: () => _openPage(context, 0),
-            icon: Icon(
-              Icons.home,
-              color: currentIndex == 0 ? const Color(0xFF8BCF00) : Colors.grey,
-            ),
-          ),
-          InkWell(
-            borderRadius: BorderRadius.circular(50),
-            onTap: () => _openPage(context, 1),
-            child: Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                color: currentIndex == 1
-                    ? const Color(0xFF006400)
-                    : Colors.grey.shade300,
-                shape: BoxShape.circle,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                tooltip: 'Dashboard',
+                onPressed: () => _openPage(context, 0),
+                icon: Icon(
+                  Icons.home,
+                  size: 32,
+                  color: currentIndex == 0 ? const Color(0xFF00D100) : Colors.grey,
+                ),
               ),
-              child: Icon(
-                Icons.power_settings_new,
-                color: currentIndex == 1 ? Colors.white : Colors.grey.shade700,
+              const SizedBox(width: 50), // Space for center button
+              IconButton(
+                tooltip: 'Profile',
+                onPressed: () => _openPage(context, 2),
+                icon: Icon(
+                  Icons.person,
+                  size: 32,
+                  color: currentIndex == 2 ? const Color(0xFF00D100) : const Color(0xFF4A4A4A),
+                ),
               ),
-            ),
+            ],
           ),
-          IconButton(
-            tooltip: 'Profile',
-            onPressed: () => _openPage(context, 2),
-            icon: Icon(
-              Icons.person,
-              color: currentIndex == 2 ? Colors.green : Colors.grey,
+          Positioned(
+            top: -25,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(50),
+              onTap: () => _openPage(context, 1),
+              child: Container(
+                width: 65,
+                height: 65,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF004D1A), // Dark green
+                  shape: BoxShape.circle,
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.present_to_all_rounded,
+                    size: 28,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
           ),
         ],

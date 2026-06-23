@@ -140,11 +140,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     'Masukkan email terdaftar untuk menerima tautan reset password resmi dari Firebase.',
                     style: TextStyle(
                       color: _LoginColors.mutedText,
-                      fontSize: 12,
+                      fontSize: 13,
                       height: 1.5,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
                   TextField(
                     controller: resetEmailController,
                     keyboardType: TextInputType.emailAddress,
@@ -153,22 +153,22 @@ class _LoginScreenState extends State<LoginScreen> {
                       prefixIcon: const Icon(
                         Icons.email_outlined,
                         color: _LoginColors.hintText,
-                        size: 18,
+                        size: 20,
                       ),
                       filled: true,
                       fillColor: const Color(0xFFF9FAFB),
                       contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 12),
+                          horizontal: 16, vertical: 14),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(14),
                         borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(14),
                         borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(14),
                         borderSide: const BorderSide(
                             color: _LoginColors.primary, width: 1.5),
                       ),
@@ -267,44 +267,42 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _LoginColors.background,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.only(bottom: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildHeader(),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                    20, 10, 20, 0), // Padding dikurangi
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildGreeting(),
-                    const SizedBox(height: 12), // Jarak dikurangi
-                    _buildAuthTabs(),
-                    const SizedBox(height: 14), // Jarak dikurangi
-                    if (_isRegister) ...[
-                      _buildNameField(),
-                      const SizedBox(height: 10),
-                    ],
-                    _buildEmailField(),
-                    const SizedBox(height: 10),
-                    _buildPasswordField(),
-                    const SizedBox(height: 8),
-                    if (!_isRegister) _buildForgotPasswordButton(),
-                    const SizedBox(height: 12), // Jarak dikurangi
-                    _buildPrimaryButton(),
-                    const SizedBox(height: 14), // Jarak dikurangi
-                    _buildDivider(),
-                    const SizedBox(height: 12), // Jarak dikurangi
-                    _buildGoogleButton(),
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: EdgeInsets.zero,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildHeader(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildGreeting(),
+                  const SizedBox(height: 24),
+                  _buildAuthTabs(),
+                  const SizedBox(height: 24),
+                  if (_isRegister) ...[
+                    _buildNameField(),
+                    const SizedBox(height: 16),
                   ],
-                ),
+                  _buildEmailField(),
+                  const SizedBox(height: 16),
+                  _buildPasswordField(),
+                  const SizedBox(height: 10),
+                  if (!_isRegister) _buildForgotPasswordButton(),
+                  SizedBox(height: _isRegister ? 20 : 10),
+                  _buildPrimaryButton(),
+                  const SizedBox(height: 24),
+                  _buildDivider(),
+                  const SizedBox(height: 24),
+                  _buildGoogleButton(),
+                  const SizedBox(height: 40),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -312,63 +310,68 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildHeader() {
     return Container(
-      height: 160, // Tinggi Header tetap kompak
+      height: MediaQuery.of(context).size.height * 0.28,
       width: double.infinity,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(24),
+          bottom: Radius.circular(32),
         ),
         image: DecorationImage(
-          image: AssetImage('assets/images/bg.png'),
+          image: AssetImage('assets/images/cow.png'),
           fit: BoxFit.cover,
         ),
       ),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 15),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.vertical(
-            bottom: Radius.circular(24),
+            bottom: Radius.circular(32),
           ),
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Colors.black.withValues(alpha: 0.3),
-              Colors.black.withValues(alpha: 0.7),
+              Colors.black.withValues(alpha: 0.2),
+              Colors.black.withValues(alpha: 0.8),
             ],
           ),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/logo_splash.png',
-              width: 100, // Diperbesar dari 50 menjadi 60
-              height: 60,
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'HYBRID BIOCELL',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.0,
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 10),
+              Image.asset(
+                'assets/images/logo_splash.png',
+                width: 120,
+                height: 70,
               ),
-            ),
-            const SizedBox(height: 4),
-            const Text(
-              'Ubah limbah hari ini menjadi energi bersih esok hari.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Color(0xFFF3F4F6),
-                fontSize: 11,
-                height: 1.4,
-                fontWeight: FontWeight.w500,
+              const SizedBox(height: 12),
+              const Text(
+                'MICROCELL',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.2,
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 6),
+              const Text(
+                'Ubah limbah hari ini menjadi energi bersih esok hari.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Color(0xFFF3F4F6),
+                  fontSize: 12,
+                  height: 1.4,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
@@ -381,19 +384,19 @@ class _LoginScreenState extends State<LoginScreen> {
         Text(
           _isRegister ? 'Buat Akun Baru' : 'Selamat Datang',
           style: const TextStyle(
-            fontSize: 20, // Font diperkecil (24 -> 20)
+            fontSize: 24,
             fontWeight: FontWeight.w900,
             color: _LoginColors.text,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 6),
         Text(
           _isRegister
-              ? 'Daftar untuk mulai memantau sistem BIOCELL.'
+              ? 'Daftar untuk mulai memantau sistem MICROCELL.'
               : 'Silakan masuk untuk melanjutkan ke dashboard.',
           style: const TextStyle(
             color: _LoginColors.mutedText,
-            fontSize: 12, // Font diperkecil (13 -> 12)
+            fontSize: 14,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -403,11 +406,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildAuthTabs() {
     return Container(
-      height: 42, // Tinggi tab dikurangi (48 -> 42)
+      height: 48,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: const Color(0xFFE5E7EB).withValues(alpha: 0.6),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
         children: [
@@ -421,7 +424,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildTabButton(String label, bool isActive) {
     return Expanded(
       child: InkWell(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
         onTap: _isLoading
             ? null
             : () {
@@ -432,12 +435,12 @@ class _LoginScreenState extends State<LoginScreen> {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: isActive ? Colors.white : Colors.transparent,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
             boxShadow: isActive
                 ? [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 6,
+                      blurRadius: 8,
                       offset: const Offset(0, 2),
                     )
                   ]
@@ -449,7 +452,7 @@ class _LoginScreenState extends State<LoginScreen> {
               color:
                   isActive ? _LoginColors.primaryDark : _LoginColors.mutedText,
               fontWeight: isActive ? FontWeight.w800 : FontWeight.w600,
-              fontSize: 13, // Font diperkecil (14 -> 13)
+              fontSize: 15,
             ),
           ),
         ),
@@ -496,7 +499,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ? Icons.visibility_off_outlined
               : Icons.visibility_outlined,
           color: _LoginColors.mutedText,
-          size: 18, // Icon diperkecil sedikit (19 -> 18)
+          size: 20,
         ),
       ),
     );
@@ -517,7 +520,7 @@ class _LoginScreenState extends State<LoginScreen> {
           style: TextStyle(
             color: _LoginColors.primaryDark,
             fontWeight: FontWeight.w700,
-            fontSize: 11, // Font diperkecil (12 -> 11)
+            fontSize: 13,
           ),
         ),
       ),
@@ -527,23 +530,23 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildPrimaryButton() {
     return SizedBox(
       width: double.infinity,
-      height: 48, // Tinggi tombol dikurangi (52 -> 48)
+      height: 52,
       child: ElevatedButton(
         onPressed: _isLoading ? null : _submitEmailAuth,
         style: ElevatedButton.styleFrom(
           backgroundColor: _LoginColors.primary,
           foregroundColor: Colors.white,
           disabledBackgroundColor: Colors.green.shade300,
-          elevation: 3, // Shadow dikurangi
+          elevation: 4,
           shadowColor: _LoginColors.primary.withValues(alpha: 0.3),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
           ),
         ),
         child: _isLoading
             ? const SizedBox(
-                width: 18,
-                height: 18,
+                width: 20,
+                height: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2.5,
                   color: Colors.white,
@@ -553,7 +556,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 _isRegister ? 'Mulai Sekarang' : 'Masuk',
                 style: const TextStyle(
                   fontWeight: FontWeight.w800,
-                  fontSize: 14, // Font diperkecil (15 -> 14)
+                  fontSize: 16,
                   letterSpacing: 0.5,
                 ),
               ),
@@ -566,13 +569,12 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         const Expanded(child: Divider(color: Color(0xFFDCE3EA))),
         Padding(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 8), // Padding dikurangi
+          padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Text(
             _isRegister ? 'atau daftar dengan' : 'atau masuk dengan',
             style: const TextStyle(
               color: _LoginColors.mutedText,
-              fontSize: 10, // Font diperkecil (11 -> 10)
+              fontSize: 12,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -585,29 +587,29 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildGoogleButton() {
     return SizedBox(
       width: double.infinity,
-      height: 48, // Tinggi tombol dikurangi (52 -> 48)
+      height: 52,
       child: OutlinedButton.icon(
         onPressed: _isLoading ? null : _submitGoogleAuth,
         style: OutlinedButton.styleFrom(
           backgroundColor: Colors.white,
           foregroundColor: _LoginColors.text,
-          elevation: 0.5, // Shadow dikurangi
-          shadowColor: Colors.black.withValues(alpha: 0.03),
+          elevation: 1,
+          shadowColor: Colors.black.withValues(alpha: 0.05),
           side: const BorderSide(color: Color(0xFFE5E7EB), width: 1.5),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
           ),
         ),
         icon: Image.asset(
           'assets/images/google.png',
-          width: 20, // Icon diperkecil (22 -> 20)
-          height: 20,
+          width: 22,
+          height: 22,
         ),
         label: Text(
           _isRegister ? 'Lanjutkan dengan Google' : 'Masuk dengan Google',
           style: const TextStyle(
             fontWeight: FontWeight.w800,
-            fontSize: 13, // Font diperkecil (14 -> 13)
+            fontSize: 15,
           ),
         ),
       ),
@@ -631,14 +633,14 @@ class _LoginScreenState extends State<LoginScreen> {
         Text(
           label,
           style: const TextStyle(
-            fontSize: 12, // Font label diperkecil (13 -> 12)
+            fontSize: 14,
             fontWeight: FontWeight.w800,
             color: _LoginColors.labelText,
           ),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 8),
         SizedBox(
-          height: 48, // Tinggi input dikurangi (52 -> 48)
+          height: 52,
           child: TextField(
             controller: controller,
             obscureText: obscureText,
@@ -647,7 +649,7 @@ class _LoginScreenState extends State<LoginScreen> {
             onSubmitted: onSubmitted,
             enabled: !_isLoading,
             style: const TextStyle(
-              fontSize: 13, // Font input diperkecil (14 -> 13)
+              fontSize: 14,
               fontWeight: FontWeight.w500,
               color: _LoginColors.text,
             ),
@@ -655,20 +657,18 @@ class _LoginScreenState extends State<LoginScreen> {
               hintText: hint,
               hintStyle: const TextStyle(
                 color: _LoginColors.hintText,
-                fontSize: 12, // Font hint diperkecil (13 -> 12)
+                fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
               prefixIcon: Icon(
                 icon,
                 color: _LoginColors.hintText,
-                size: 18, // Icon prefix diperkecil (20 -> 18)
+                size: 20,
               ),
               suffixIcon: suffixIcon,
               filled: true,
               fillColor: const Color(0xFFF9FAFB),
-              contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 0), // Padding vertikal 0 agar pas di height 48
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               border: _inputBorder(),
               enabledBorder: _inputBorder(),
               focusedBorder: _inputBorder(_LoginColors.primary),
@@ -681,8 +681,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   OutlineInputBorder _inputBorder([Color color = const Color(0xFFE5E7EB)]) {
     return OutlineInputBorder(
-      borderRadius:
-          BorderRadius.circular(14), // Radius input diperkecil (16 -> 14)
+      borderRadius: BorderRadius.circular(16),
       borderSide: BorderSide(
           color: color, width: color == const Color(0xFFE5E7EB) ? 1 : 1.5),
     );

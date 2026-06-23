@@ -25,76 +25,83 @@ class _ProfileScreenState extends State<ProfileScreen> {
         final name = user?.displayName?.trim().isNotEmpty == true
             ? user!.displayName!.trim()
             : 'Pengguna Microcell';
-        final email = user?.email ?? 'Belum ada email';
+        final email = user?.email ?? '';
 
         return Scaffold(
-          backgroundColor: const Color(0xFFF4F7F5),
+          backgroundColor: Colors.white,
           body: SafeArea(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(18, 12, 18, 18),
-              child: Column(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: IconButton(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(
-                          context,
-                          AppRoutes.dashboard,
-                        );
-                      },
-                      icon: const Icon(
-                        Icons.arrow_back_ios_new,
-                        color: Colors.green,
-                        size: 18,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Back button
+                Padding(
+                  padding: const EdgeInsets.only(left: 8, top: 8),
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(
+                        context,
+                        AppRoutes.dashboard,
+                      );
+                    },
+                    icon: const Icon(
+                      Icons.chevron_left,
+                      color: Colors.green,
+                      size: 32,
+                    ),
+                  ),
+                ),
+
+                // Avatar + Name centered
+                Center(
+                  child: Column(
+                    children: [
+                      _buildAvatar(user?.photoURL),
+                      const SizedBox(height: 16),
+                      Text(
+                        name,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFF1A1A1A),
+                        ),
                       ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 36),
+
+                // Menu items
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      children: [
+                        _buildMenuItem(
+                          icon: Icons.person_outline,
+                          title: 'Profile',
+                          onTap: () {},
+                        ),
+                        _buildDivider(),
+                        _buildSwitchMenu(),
+                        _buildDivider(),
+                        _buildMenuItem(
+                          icon: Icons.vpn_key_outlined,
+                          title: 'Reset Password',
+                          onTap: () => _sendPasswordReset(email),
+                        ),
+                        _buildDivider(),
+                        _buildMenuItem(
+                          icon: Icons.logout_outlined,
+                          title: isSigningOut ? 'Keluar...' : 'Keluar',
+                          onTap: isSigningOut ? () {} : _signOut,
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 2),
-                  _buildAvatar(user?.photoURL),
-                  const SizedBox(height: 12),
-                  Text(
-                    name,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
-                      color: Color(0xFF1F2937),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    email,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  _buildMenuItem(
-                    icon: Icons.person_outline,
-                    title: 'Profile',
-                    subtitle: 'Akun pengguna aktif',
-                    onTap: () {},
-                  ),
-                  _buildSwitchMenu(),
-                  _buildMenuItem(
-                    icon: Icons.key_outlined,
-                    title: 'Reset Password',
-                    subtitle: 'Kirim tautan reset ke email',
-                    onTap: () => _sendPasswordReset(email),
-                  ),
-                  _buildMenuItem(
-                    icon: Icons.logout,
-                    title: isSigningOut ? 'Keluar...' : 'Keluar',
-                    subtitle: 'Akhiri sesi login',
-                    onTap: isSigningOut ? () {} : _signOut,
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 2),
@@ -106,35 +113,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildAvatar(String? photoUrl) {
     return Stack(
       children: [
-        if (photoUrl != null && photoUrl.isNotEmpty)
-          CircleAvatar(
-            radius: 38,
-            backgroundImage: NetworkImage(photoUrl),
-          )
-        else
-          const CircleAvatar(
-            radius: 38,
-            backgroundColor: Color(0xFFD7ECD8),
-            child: Icon(
-              Icons.person,
-              color: Colors.green,
-              size: 40,
+        Container(
+          width: 100,
+          height: 100,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: const Color(0xFFD7ECD8),
+              width: 3,
             ),
           ),
+          child: ClipOval(
+            child: photoUrl != null && photoUrl.isNotEmpty
+                ? Image.network(
+                    photoUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) =>
+                        const Icon(Icons.person, color: Colors.green, size: 50),
+                  )
+                : Container(
+                    color: const Color(0xFFD7ECD8),
+                    child: const Icon(
+                      Icons.person,
+                      color: Colors.green,
+                      size: 50,
+                    ),
+                  ),
+          ),
+        ),
         Positioned(
-          right: 0,
+          right: 2,
           bottom: 2,
           child: Container(
-            width: 24,
-            height: 24,
-            decoration: const BoxDecoration(
-              color: Color(0xFFBFE8C1),
+            width: 28,
+            height: 28,
+            decoration: BoxDecoration(
+              color: const Color(0xFF6DBF4A),
               shape: BoxShape.circle,
+              border: Border.all(color: Colors.white, width: 2),
             ),
             child: const Icon(
-              Icons.verified_user_outlined,
+              Icons.edit,
               size: 14,
-              color: Colors.green,
+              color: Colors.white,
             ),
           ),
         ),
@@ -145,105 +166,114 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildMenuItem({
     required IconData icon,
     required String title,
-    required String subtitle,
     required VoidCallback onTap,
   }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: _menuDecoration(),
-      child: ListTile(
-        dense: true,
-        minLeadingWidth: 0,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-        leading: _buildMenuIcon(icon),
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w800,
-          ),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: const BoxDecoration(
+                color: Color(0xFFE8F5E9),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                icon,
+                color: const Color(0xFF2E7D32),
+                size: 22,
+              ),
+            ),
+            const SizedBox(width: 20),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1A1A1A),
+              ),
+            ),
+          ],
         ),
-        subtitle: Text(
-          subtitle,
-          style: const TextStyle(
-            fontSize: 10,
-            color: Colors.grey,
-          ),
-        ),
-        trailing: const Icon(
-          Icons.chevron_right,
-          color: Colors.grey,
-          size: 18,
-        ),
-        onTap: onTap,
       ),
     );
   }
 
   Widget _buildSwitchMenu() {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: _menuDecoration(),
-      child: SwitchListTile(
-        dense: true,
-        contentPadding: const EdgeInsets.fromLTRB(12, 0, 10, 0),
-        secondary: _buildMenuIcon(Icons.notifications_none),
-        title: const Text(
-          'Notifikasi',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w800,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: const BoxDecoration(
+              color: Color(0xFFE8F5E9),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.notifications_none_outlined,
+              color: Color(0xFF2E7D32),
+              size: 22,
+            ),
           ),
-        ),
-        subtitle: const Text(
-          'Peringatan status alat',
-          style: TextStyle(
-            fontSize: 10,
-            color: Colors.grey,
+          const SizedBox(width: 20),
+          const Expanded(
+            child: Text(
+              'Notifikasi',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1A1A1A),
+              ),
+            ),
           ),
-        ),
-        value: notification,
-        activeThumbColor: Colors.white,
-        activeTrackColor: Colors.black,
-        onChanged: (value) {
-          setState(() => notification = value);
-        },
+          // Custom toggle switch matching the design
+          GestureDetector(
+            onTap: () => setState(() => notification = !notification),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              width: 52,
+              height: 28,
+              decoration: BoxDecoration(
+                color: notification ? Colors.black : Colors.grey[400],
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: AnimatedAlign(
+                duration: const Duration(milliseconds: 200),
+                alignment:
+                    notification ? Alignment.centerRight : Alignment.centerLeft,
+                child: Container(
+                  margin: const EdgeInsets.all(3),
+                  width: 22,
+                  height: 22,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildMenuIcon(IconData icon) {
-    return Container(
-      width: 32,
-      height: 32,
-      decoration: const BoxDecoration(
-        color: Color(0xFFD7ECD8),
-        shape: BoxShape.circle,
-      ),
-      child: Icon(
-        icon,
-        color: Colors.green,
-        size: 16,
-      ),
-    );
-  }
-
-  BoxDecoration _menuDecoration() {
-    return BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(14),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.06),
-          blurRadius: 10,
-          offset: const Offset(0, 3),
-        ),
-      ],
+  Widget _buildDivider() {
+    return const Divider(
+      height: 1,
+      thickness: 1,
+      color: Color(0xFFF0F0F0),
     );
   }
 
   Future<void> _sendPasswordReset(String email) async {
-    if (!email.contains('@')) {
+    if (email.isEmpty || !email.contains('@')) {
       _showSnackBar('Email akun belum tersedia.');
       return;
     }

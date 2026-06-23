@@ -4,7 +4,7 @@ import 'dashboard_screen.dart';
 import 'login_screen.dart';
 import 'navigation.dart';
 import 'profile.dart';
-import 'splash_screen.dart';
+import 'opening.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const SplashScreen(),
+      home: const OpeningScreen(),
       routes: {
         AppRoutes.login: (context) => const LoginScreen(),
         AppRoutes.dashboard: (context) => const DashboardScreen(),
