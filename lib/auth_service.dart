@@ -139,6 +139,30 @@ class AuthService {
     return FirebaseAuth.instance.sendPasswordResetEmail(email: email);
   }
 
+  static Future<void> updatePassword(String newPassword) async {
+    await AppFirebase.ensureInitialized();
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      throw FirebaseAuthException(
+        code: 'no-current-user',
+        message: 'Pengguna belum masuk.',
+      );
+    }
+    await user.updatePassword(newPassword);
+  }
+
+  static Future<void> updateProfile({required String displayName}) async {
+    await AppFirebase.ensureInitialized();
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      throw FirebaseAuthException(
+        code: 'no-current-user',
+        message: 'Pengguna belum masuk.',
+      );
+    }
+    await user.updateDisplayName(displayName);
+  }
+
   static String readableAuthError(Object error) {
     if (error is FirebaseAuthException) {
       switch (error.code) {

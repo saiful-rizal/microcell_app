@@ -5,6 +5,7 @@ class AppRoutes {
   static const dashboard = '/dashboard';
   static const control = '/control';
   static const profile = '/profile';
+  static const notifications = '/notifications';
 }
 
 class AppBottomNavigationBar extends StatelessWidget {

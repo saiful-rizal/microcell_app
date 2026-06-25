@@ -5,6 +5,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'auth_service.dart';
 import 'device_data_service.dart';
 import 'navigation.dart';
+import 'notification_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -111,36 +112,59 @@ class DashboardScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              // Notification Bell
-              Container(
-                width: 42,
-                height: 42,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF1B5E20), // Dark green background
-                  shape: BoxShape.circle,
-                ),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    const Icon(
-                      Icons.notifications_none,
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                    Positioned(
-                      right: 10,
-                      top: 10,
-                      child: Container(
-                        width: 8,
-                        height: 8,
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
+              // Notification Bell dengan badge realtime
+              StreamBuilder<List<AppNotification>>(
+                stream: NotificationService.stream(),
+                builder: (context, snap) {
+                  final unread = (snap.data ?? [])
+                      .where((n) => !n.isRead)
+                      .length;
+                  return GestureDetector(
+                    onTap: () => Navigator.pushReplacementNamed(
+                        context, AppRoutes.notifications),
+                    child: Stack(
+                      children: [
+                        Container(
+                          width: 42,
+                          height: 42,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF1B5E20),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.notifications_none,
+                            color: Colors.white,
+                            size: 24,
+                          ),
                         ),
-                      ),
+                        if (unread > 0)
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: Container(
+                              constraints: const BoxConstraints(
+                                  minWidth: 18, minHeight: 18),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 4),
+                              decoration: const BoxDecoration(
+                                color: Colors.red,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Text(
+                                unread > 9 ? '9+' : '$unread',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
-                  ],
-                ),
+                  );
+                },
               ),
             ],
           ),

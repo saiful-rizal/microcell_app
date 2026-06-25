@@ -59,7 +59,6 @@ class DefaultFirebaseOptions {
     databaseURL: 'https://microcellapp-default-rtdb.firebaseio.com',
     storageBucket: 'microcellapp.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAKtvEcIocl3AxFGT4eYWVtZt3_rARPFmo',
     appId: '1:19159557571:ios:f0a63cc942cee685500976',
@@ -67,9 +66,9 @@ class DefaultFirebaseOptions {
     projectId: 'microcellapp',
     databaseURL: 'https://microcellapp-default-rtdb.firebaseio.com',
     storageBucket: 'microcellapp.firebasestorage.app',
+    iosClientId: '19159557571-h945mtqdaf7m1mnfjg2so8dmetjid2p9.apps.googleusercontent.com',
     iosBundleId: 'com.example.microcellApp',
   );
-
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyAKtvEcIocl3AxFGT4eYWVtZt3_rARPFmo',
     appId: '1:19159557571:ios:f0a63cc942cee685500976',
@@ -77,6 +76,7 @@ class DefaultFirebaseOptions {
     projectId: 'microcellapp',
     databaseURL: 'https://microcellapp-default-rtdb.firebaseio.com',
     storageBucket: 'microcellapp.firebasestorage.app',
+    iosClientId: '19159557571-h945mtqdaf7m1mnfjg2so8dmetjid2p9.apps.googleusercontent.com',
     iosBundleId: 'com.example.microcellApp',
   );
 

@@ -56,6 +56,75 @@ class DeviceDataService {
     return _deviceRef.child('notification').remove();
   }
 
+  /// Mengisi data awal ke Firebase Realtime Database jika node belum ada.
+  /// Dipanggil otomatis saat app pertama kali dijalankan.
+  static Future<void> seedInitialData() async {
+    await AppFirebase.ensureInitialized();
+
+    final snapshot = await _deviceRef.get();
+
+    // Jika data sudah ada, tidak perlu seed
+    if (snapshot.exists) return;
+
+    await _deviceRef.set({
+      'status': {
+        'batteryLevel': 85.0,
+        'current': 1.2,
+        'voltage': 12.5,
+        'temperature': 28.0,
+        'humidity': 70.0,
+        'acVoltage': 220.0,
+        'lightIntensity': 570.0,
+        'weatherTemp': 32.0,
+        'weatherDescription': 'Cerah Berawan',
+        'location': 'Bangsalsari, Jember',
+        'updatedAt': ServerValue.timestamp,
+      },
+      'relays': {
+        'relay1': false,
+        'relay2': false,
+        'relay3': true,
+        'updatedAt': ServerValue.timestamp,
+      },
+      'notification': {
+        'message': '',
+      },
+    });
+  }
+
+  /// Update status sensor secara manual dari app (untuk testing / admin).
+  static Future<void> updateStatus({
+    double? batteryLevel,
+    double? current,
+    double? voltage,
+    double? temperature,
+    double? humidity,
+    double? acVoltage,
+    double? lightIntensity,
+    double? weatherTemp,
+    String? weatherDescription,
+    String? location,
+  }) async {
+    await AppFirebase.ensureInitialized();
+
+    final updates = <String, dynamic>{
+      'updatedAt': ServerValue.timestamp,
+    };
+
+    if (batteryLevel != null) updates['batteryLevel'] = batteryLevel;
+    if (current != null) updates['current'] = current;
+    if (voltage != null) updates['voltage'] = voltage;
+    if (temperature != null) updates['temperature'] = temperature;
+    if (humidity != null) updates['humidity'] = humidity;
+    if (acVoltage != null) updates['acVoltage'] = acVoltage;
+    if (lightIntensity != null) updates['lightIntensity'] = lightIntensity;
+    if (weatherTemp != null) updates['weatherTemp'] = weatherTemp;
+    if (weatherDescription != null) updates['weatherDescription'] = weatherDescription;
+    if (location != null) updates['location'] = location;
+
+    return _deviceRef.child('status').update(updates);
+  }
+
   static Map<String, bool> _parseRelays(Object? value) {
     final defaults = {
       'relay1': false,
