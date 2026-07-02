@@ -37,7 +37,10 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       curve: const Interval(0.35, 1.0, curve: Curves.easeIn),
     );
 
-    _slideUp = Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(
+    _slideUp = Tween<Offset>(
+      begin: const Offset(0, 0.5),
+      end: Offset.zero,
+    ).animate(
       CurvedAnimation(
         parent: _controller,
         curve: const Interval(0.4, 1.0, curve: Curves.easeOutQuart),
@@ -60,17 +63,14 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     return Scaffold(
       body: Stack(
         children: [
-          // Background
           SizedBox(
             width: size.width,
             height: size.height,
             child: Image.asset(
-              "assets/images/bg.png",
+              'assets/images/bg.png',
               fit: BoxFit.cover,
             ),
           ),
-
-          // Gradient Overlay
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -83,97 +83,85 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               ),
             ),
           ),
-
           SafeArea(
             child: Column(
               children: [
                 const SizedBox(height: 20),
-
-                // Logo (animasi first entry)
                 Center(
                   child: FadeTransition(
                     opacity: _fade,
                     child: ScaleTransition(
                       scale: _iconScale,
                       child: Image.asset(
-                        "assets/images/logo_splash.png",
+                        'assets/images/logo_splash.png',
                         width: 140,
                       ),
                     ),
                   ),
                 ),
-
                 const Spacer(),
-
                 Stack(
                   alignment: Alignment.bottomCenter,
                   clipBehavior: Clip.none,
                   children: [
-                    // Glass Card
                     SlideTransition(
                       position: _slideUp,
                       child: FadeTransition(
                         opacity: _fade,
                         child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 28),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(30),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(
-                            sigmaX: 15,
-                            sigmaY: 15,
-                          ),
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.fromLTRB(
-                              24,
-                              24,
-                              24,
-                              65,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              color: Colors.white.withValues(alpha: 0.12),
-                              border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.12),
+                          padding: const EdgeInsets.symmetric(horizontal: 28),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(30),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(
+                                sigmaX: 15,
+                                sigmaY: 15,
                               ),
-                            ),
-                            child: const Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  "Hai Sobat MICROCELL",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white,
+                              child: Container(
+                                width: double.infinity,
+                                padding:
+                                    const EdgeInsets.fromLTRB(24, 24, 24, 65),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: Colors.white.withValues(alpha: 0.12),
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.12),
                                   ),
                                 ),
-                                SizedBox(height: 10),
-                                Text(
-                                  "Inovasi hijau yang mengubah limbah peternakan\n"
-                                  "menjadi energi terbarukan.\n\n"
-                                  "Mulai kendalikan sistemmu sekarang\n"
-                                  "lebih hemat, bersih, dan pintar.",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    height: 1.5,
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                                child: const Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      'Hai Sobat MICROCELL',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      'Inovasi hijau yang mengubah limbah peternakan\n'
+                                      'menjadi energi terbarukan.\n\n'
+                                      'Mulai kendalikan sistemmu sekarang\n'
+                                      'lebih hemat, bersih, dan pintar.',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        height: 1.5,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-
-                    // Button
                     Positioned(
                       bottom: -32,
                       child: SlideTransition(
@@ -181,55 +169,54 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         child: FadeTransition(
                           opacity: _fade,
                           child: Container(
-                        width: 74,
-                        height: 74,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.white24,
-                            width: 1.5,
-                          ),
-                        ),
-                        child: Center(
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(100),
-                            onTap: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const LoginScreen(),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              width: 56,
-                              height: 56,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    Color(0xFF8BC34A),
-                                    Color(0xFF4CAF50),
-                                  ],
-                                ),
+                            width: 74,
+                            height: 74,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.white24,
+                                width: 1.5,
                               ),
-                              child: const Icon(
-                                Icons.arrow_forward_rounded,
-                                color: Colors.white,
-                                size: 22,
+                            ),
+                            child: Center(
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(100),
+                                onTap: () {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const LoginScreen(),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  width: 56,
+                                  height: 56,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Color(0xFF8BC34A),
+                                        Color(0xFF4CAF50),
+                                      ],
+                                    ),
+                                  ),
+                                  child: const Icon(
+                                    Icons.arrow_forward_rounded,
+                                    color: Colors.white,
+                                    size: 22,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-                ),
-
                 const SizedBox(height: 60),
               ],
             ),
@@ -239,5 +226,3 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     );
   }
 }
-
-

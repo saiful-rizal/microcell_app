@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'app_firebase.dart';
+import 'firebase_options.dart';
 
 class AuthService {
   AuthService._();
@@ -10,9 +11,9 @@ class AuthService {
   static bool _googleInitialized = false;
   static Future<void>? _googleInitialization;
 
-  // Isi dengan Web Client ID dari Firebase/GCP jika google-services.json
-  // belum berisi oauth_client client_type 3.
-  static const String? webClientId = null;
+  // Web Client ID dari oauth_client client_type 3 di google-services.json.
+  static const String androidServerClientId =
+      '19159557571-a41a4t9s0sghcr7id6hq865vekomnee1.apps.googleusercontent.com';
 
   static User? get currentUser {
     if (!AppFirebase.isInitialized) {
@@ -44,7 +45,8 @@ class AuthService {
 
   static Future<void> _initializeGoogleSignInInstance() async {
     await GoogleSignIn.instance.initialize(
-      serverClientId: webClientId,
+      clientId: _appleClientId,
+      serverClientId: androidServerClientId,
     );
     _googleInitialized = true;
   }
@@ -90,6 +92,13 @@ class AuthService {
 
     if (kIsWeb) {
       final provider = GoogleAuthProvider();
+      provider
+        ..addScope('email')
+        ..addScope('profile')
+        ..setCustomParameters({
+          'prompt': 'select_account',
+        });
+
       return FirebaseAuth.instance.signInWithPopup(provider);
     }
 
@@ -102,6 +111,8 @@ class AuthService {
           message: 'Google Sign-In belum tersedia di perangkat ini.',
         );
       }
+
+      await GoogleSignIn.instance.signOut();
 
       final account = await GoogleSignIn.instance.authenticate();
       final auth = account.authentication;
@@ -185,6 +196,8 @@ class AuthService {
         case 'popup-closed-by-user':
         case 'canceled':
           return 'Login Google dibatalkan.';
+        case 'popup-blocked':
+          return 'Popup Google diblokir browser. Izinkan popup untuk aplikasi ini lalu coba lagi.';
         default:
           return error.message ?? 'Autentikasi gagal.';
       }
@@ -215,4 +228,13 @@ class AuthService {
   static bool get _isDesktop =>
       defaultTargetPlatform == TargetPlatform.windows ||
       defaultTargetPlatform == TargetPlatform.linux;
+
+  static String? get _appleClientId {
+    if (defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.macOS) {
+      return DefaultFirebaseOptions.currentPlatform.iosClientId;
+    }
+
+    return null;
+  }
 }

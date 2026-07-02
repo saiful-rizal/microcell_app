@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "19159557571-uqagd033o60o7tf6vu1ebl3r50gg9p9b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.microcell_app",
+            "certificate_hash": "3d62cd03333511358284c0626e58ae92c6cedf17"
+          }
+        },
+        {
           "client_id": "19159557571-a41a4t9s0sghcr7id6hq865vekomnee1.apps.googleusercontent.com",
           "client_type": 3
         }

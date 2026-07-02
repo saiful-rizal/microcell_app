@@ -126,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 borderRadius: BorderRadius.circular(20),
               ),
               title: const Text(
-                'Lupa Password',
+                'Reset Password',
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
                   color: _LoginColors.text,
@@ -134,36 +134,26 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Masukkan email terdaftar untuk menerima tautan reset password resmi dari Firebase.',
+                    'Masukkan email terdaftar untuk menerima tautan reset password.',
                     style: TextStyle(
                       color: _LoginColors.mutedText,
-                      fontSize: 13,
+                      fontSize: 12,
                       height: 1.5,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   TextField(
                     controller: resetEmailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       hintText: 'contoh@email.com',
-                      prefixIcon: const Icon(
-                        Icons.email_outlined,
-                        color: _LoginColors.hintText,
-                        size: 20,
-                      ),
                       filled: true,
                       fillColor: const Color(0xFFF9FAFB),
                       contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 14),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
                         borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
                       ),
@@ -183,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: const Text(
                     'Batal',
                     style: TextStyle(
-                      color: _LoginColors.mutedText,
+                      color: Colors.grey,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -233,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                         },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _LoginColors.primary,
+                    backgroundColor: Colors.green,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

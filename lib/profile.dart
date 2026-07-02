@@ -25,6 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         final name = user?.displayName?.trim().isNotEmpty == true
             ? user!.displayName!.trim()
             : 'Pengguna Microcell';
+        final email = user?.email?.trim();
         return Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
@@ -64,6 +65,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           color: Color(0xFF1A1A1A),
                         ),
                       ),
+                      if (email != null && email.isNotEmpty) ...[
+                        const SizedBox(height: 6),
+                        Text(
+                          email,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF697586),
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ),

@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'app_firebase.dart';
 import 'auth_service.dart';
@@ -10,26 +11,29 @@ import 'notification_screen.dart';
 import 'permission_service.dart';
 import 'profile.dart';
 import 'opening.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Inisialisasi Firebase sebelum runApp
-  await AppFirebase.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   // Inisialisasi local notifications (channel Android, dll.)
   await PermissionService.initLocalNotifications();
-
-  // Request semua permission yang dibutuhkan sistem
-  await PermissionService.requestAllPermissions();
-
-  // Pre-warm Google Sign-In di background agar tidak lambat saat user tap
-  AuthService.initializeGoogleSignIn().ignore();
 
   // Seed data awal ke Realtime Database jika belum ada (hanya sekali)
   DeviceDataService.seedInitialData().ignore();
 
   runApp(const MyApp());
+
+  // Mulai setelah frame pertama supaya startup terasa ringan.
+  Future<void>.delayed(
+    const Duration(milliseconds: 600),
+    AuthService.initializeGoogleSignIn,
+  ).ignore();
 }
 
 class MyApp extends StatelessWidget {
@@ -54,8 +58,20 @@ class MyApp extends StatelessWidget {
 /// AuthGate: menentukan apakah user sudah login atau belum.
 /// - Jika sudah login → langsung ke DashboardScreen
 /// - Jika belum → tampilkan OpeningScreen (splash + onboarding + login)
-class AuthGate extends StatelessWidget {
+class AuthGate extends StatefulWidget {
   const AuthGate({super.key});
+
+  @override
+  State<AuthGate> createState() => _AuthGateState();
+}
+
+class _AuthGateState extends State<AuthGate> {
+  @override
+  void initState() {
+    super.initState();
+    // Request permission setelah runApp berjalan dan Flutter terhubung ke Activity
+    PermissionService.requestAllPermissions().ignore();
+  }
 
   @override
   Widget build(BuildContext context) {

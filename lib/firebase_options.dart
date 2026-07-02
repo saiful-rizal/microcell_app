@@ -82,12 +82,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyB9iqiqEOnWhp5tHJcWvvo1l0iS_SXHRVI',
-    appId: '1:19159557571:web:e374d4cecee405b1500976',
+    appId: '1:19159557571:web:09cfa605b695643c500976',
     messagingSenderId: '19159557571',
     projectId: 'microcellapp',
     authDomain: 'microcellapp.firebaseapp.com',
     databaseURL: 'https://microcellapp-default-rtdb.firebaseio.com',
     storageBucket: 'microcellapp.firebasestorage.app',
-    measurementId: 'G-R5EFM01QVH',
+    measurementId: 'G-K3BETE0W1F',
   );
 }

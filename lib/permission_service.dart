@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'dart:ui';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -156,16 +157,16 @@ class PermissionService {
     );
   }
 
-  static int _typeColor(NotifType type) {
+  static Color _typeColor(NotifType type) {
     switch (type) {
       case NotifType.danger:
-        return 0xFFDC2626;
+        return const Color(0xFFDC2626);
       case NotifType.warning:
-        return 0xFFF59E0B;
+        return const Color(0xFFF59E0B);
       case NotifType.success:
-        return 0xFF16A34A;
+        return const Color(0xFF16A34A);
       case NotifType.info:
-        return 0xFF0284C7;
+        return const Color(0xFF0284C7);
     }
   }
 }
