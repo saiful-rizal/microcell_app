@@ -94,7 +94,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                       scale: _iconScale,
                       child: Image.asset(
                         'assets/images/logo_splash.png',
-                        width: 140,
+                        width: 240,
                       ),
                     ),
                   ),

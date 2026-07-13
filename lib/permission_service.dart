@@ -38,7 +38,7 @@ class PermissionService {
     );
 
     // Buat notification channel Android
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       const channel = AndroidNotificationChannel(
         'microcell_alerts',
         'Microcell Alerts',
@@ -66,11 +66,11 @@ class PermissionService {
   /// Minta semua permission yang dibutuhkan sistem saat app pertama kali dibuka.
   /// Mengembalikan true jika notifikasi diizinkan (permission kritis).
   static Future<bool> requestAllPermissions() async {
-    if (!Platform.isAndroid && !Platform.isIOS) return true;
+    if (kIsWeb || (!Platform.isAndroid && !Platform.isIOS)) return true;
 
     final results = <Permission, PermissionStatus>{};
 
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       // Permission notifikasi (wajib Android 13+)
       results[Permission.notification] =
           await Permission.notification.request();
@@ -88,7 +88,7 @@ class PermissionService {
       }
     }
 
-    if (Platform.isIOS) {
+    if (!kIsWeb && Platform.isIOS) {
       results[Permission.notification] =
           await Permission.notification.request();
     }
@@ -107,7 +107,7 @@ class PermissionService {
 
   /// Cek apakah permission notifikasi sudah diberikan.
   static Future<bool> isNotificationGranted() async {
-    if (!Platform.isAndroid && !Platform.isIOS) return true;
+    if (kIsWeb || (!Platform.isAndroid && !Platform.isIOS)) return true;
     return (await Permission.notification.status).isGranted;
   }
 
