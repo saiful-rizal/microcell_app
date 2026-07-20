@@ -157,8 +157,8 @@ class NotificationService {
         'createdAt': now.subtract(const Duration(hours: 1)).millisecondsSinceEpoch,
       },
       {
-        'title': 'Relay 3 Diaktifkan',
-        'message': 'Stop Kontak 3 berhasil diaktifkan oleh pengguna.',
+        'title': 'Relay 2 Diaktifkan',
+        'message': 'Stop Kontak 2 berhasil diaktifkan oleh pengguna.',
         'type': 'success',
         'isRead': true,
         'createdAt': now.subtract(const Duration(hours: 3)).millisecondsSinceEpoch,

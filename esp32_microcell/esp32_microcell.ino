@@ -24,7 +24,6 @@
 //====================================================
 #define RELAY1_PIN 5
 #define RELAY2_PIN 18
-// RELAY3 is software-only (no physical pin)
 
 FirebaseData fbdo;
 FirebaseAuth auth;
@@ -46,7 +45,6 @@ float lightIntensity = 570.0;
 float weatherTemp = 32.0;
 String weatherDescription = "Cerah Berawan";
 String location = "Bangsalsari, Jember";
-bool relay3State = true;
 
 //====================================================
 void connectWiFi()
@@ -269,20 +267,7 @@ void loop()
         Serial.println(fbdo.errorReason());
     }
 
-    //==============================
-    // Relay 3 (Software Only — no physical pin)
-    //==============================
 
-    if (Firebase.RTDB.getBool(&fbdo, "/devices/main/relays/relay3"))
-    {
-        relay3State = fbdo.boolData();
-        Firebase.RTDB.setBool(&fbdo, "/devices/main/status/relay3", relay3State);
-    }
-    else
-    {
-        Serial.print("Relay3 Error : ");
-        Serial.println(fbdo.errorReason());
-    }
 
     //==============================
     // Serial Monitor
@@ -346,9 +331,6 @@ void loop()
 
     Serial.print("Relay2 : ");
     Serial.println(digitalRead(RELAY2_PIN) == LOW ? "ON" : "OFF");
-
-    Serial.print("Relay3 : ");
-    Serial.println(relay3State ? "ON" : "OFF");
 
     Serial.println("======================");
 }
