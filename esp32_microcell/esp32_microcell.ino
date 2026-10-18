@@ -22,8 +22,10 @@
 //====================================================
 // RELAY
 //====================================================
-#define RELAY1_PIN 5
-#define RELAY2_PIN 18
+#define RELAY1_PIN 22
+#define RELAY2_PIN 23
+#define RELAY3_PIN 21
+#define RELAY4_PIN 19
 
 FirebaseData fbdo;
 FirebaseAuth auth;
@@ -89,10 +91,14 @@ void setup()
 
     pinMode(RELAY1_PIN, OUTPUT);
     pinMode(RELAY2_PIN, OUTPUT);
+    pinMode(RELAY3_PIN, OUTPUT);
+    pinMode(RELAY4_PIN, OUTPUT);
 
     // Relay OFF (active LOW)
     digitalWrite(RELAY1_PIN, HIGH);
     digitalWrite(RELAY2_PIN, HIGH);
+    digitalWrite(RELAY3_PIN, HIGH);
+    digitalWrite(RELAY4_PIN, HIGH);
 
     connectWiFi();
 
@@ -270,6 +276,44 @@ void loop()
 
 
     //==============================
+    // Relay 3
+    //==============================
+
+    if (Firebase.RTDB.getBool(&fbdo, "/devices/main/relays/relay3"))
+    {
+        bool relay3 = fbdo.boolData();
+
+        digitalWrite(RELAY3_PIN, relay3 ? LOW : HIGH);
+
+        Firebase.RTDB.setBool(&fbdo, "/devices/main/status/relay3", relay3);
+    }
+    else
+    {
+        Serial.print("Relay3 Error : ");
+        Serial.println(fbdo.errorReason());
+    }
+
+    //==============================
+    // Relay 4
+    //==============================
+
+    if (Firebase.RTDB.getBool(&fbdo, "/devices/main/relays/relay4"))
+    {
+        bool relay4 = fbdo.boolData();
+
+        digitalWrite(RELAY4_PIN, relay4 ? LOW : HIGH);
+
+        Firebase.RTDB.setBool(&fbdo, "/devices/main/status/relay4", relay4);
+    }
+    else
+    {
+        Serial.print("Relay4 Error : ");
+        Serial.println(fbdo.errorReason());
+    }
+
+
+
+    //==============================
     // Serial Monitor
     //==============================
 
@@ -331,6 +375,12 @@ void loop()
 
     Serial.print("Relay2 : ");
     Serial.println(digitalRead(RELAY2_PIN) == LOW ? "ON" : "OFF");
+
+    Serial.print("Relay3 : ");
+    Serial.println(digitalRead(RELAY3_PIN) == LOW ? "ON" : "OFF");
+
+    Serial.print("Relay4 : ");
+    Serial.println(digitalRead(RELAY4_PIN) == LOW ? "ON" : "OFF");
 
     Serial.println("======================");
 }

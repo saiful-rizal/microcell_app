@@ -326,44 +326,18 @@ class DashboardScreen extends StatelessWidget {
                     height: 1.1,
                   ),
                 ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Column(
-                      children: [
-                        const Text(
-                          'Arus',
-                          style: TextStyle(color: Colors.white, fontSize: 10),
-                        ),
-                        Text(
-                          '${_cleanNumber(status.current)} A',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(width: 25),
-                    Column(
-                      children: [
-                        const Text(
-                          'Tegangan',
-                          style: TextStyle(color: Colors.white, fontSize: 10),
-                        ),
-                        Text(
-                          '${_cleanNumber(status.voltage)} V',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                const SizedBox(height: 4),
+                const Text(
+                  'Tegangan',
+                  style: TextStyle(color: Colors.white, fontSize: 10),
+                ),
+                Text(
+                  '${_cleanNumber(status.voltage)} V',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 18),
               ],
@@ -402,24 +376,14 @@ class DashboardScreen extends StatelessWidget {
         childAspectRatio: 2.1,
         children: [
           _MetricCard(
-            icon: Icons.thermostat,
-            title: 'Suhu',
-            value: '${_cleanNumber(status.temperature)} °C',
-          ),
-          _MetricCard(
-            icon: Icons.water_drop_outlined,
-            title: 'Kelembapan',
-            value: '${_cleanNumber(status.humidity)} %',
+            icon: Icons.electric_bolt_outlined,
+            title: 'Arus',
+            value: '${_cleanNumber(status.current)} A',
           ),
           _MetricCard(
             icon: Icons.bolt_outlined,
             title: 'Tegangan AC',
             value: '${_cleanNumber(status.acVoltage)} V',
-          ),
-          _MetricCard(
-            icon: Icons.light_mode_outlined,
-            title: 'Intensitas Cahaya',
-            value: '${_cleanNumber(status.lightIntensity)} Lux',
           ),
         ],
       ),

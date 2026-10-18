@@ -14,12 +14,16 @@ class RelayControlScreen extends StatelessWidget {
       initialData: const {
         'relay1': false,
         'relay2': false,
+        'relay3': false,
+        'relay4': false,
       },
       builder: (context, snapshot) {
         final relays = snapshot.data ??
             const {
               'relay1': false,
               'relay2': false,
+              'relay3': false,
+              'relay4': false,
             };
         final isAnyRelayActive = relays.values.any((value) => value);
 
@@ -67,6 +71,20 @@ class RelayControlScreen extends StatelessWidget {
                         title: 'Stop Kontak 2',
                         relayKey: 'relay2',
                         value: relays['relay2'] ?? false,
+                      ),
+                      const SizedBox(height: 12),
+                      _buildRelayCard(
+                        context,
+                        title: 'Stop Kontak 3',
+                        relayKey: 'relay3',
+                        value: relays['relay3'] ?? false,
+                      ),
+                      const SizedBox(height: 12),
+                      _buildRelayCard(
+                        context,
+                        title: 'Stop Kontak 4',
+                        relayKey: 'relay4',
+                        value: relays['relay4'] ?? false,
                       ),
 
                       const SizedBox(height: 40),

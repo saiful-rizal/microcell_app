@@ -83,6 +83,8 @@ class DeviceDataService {
       'relays': {
         'relay1': false,
         'relay2': false,
+        'relay3': false,
+        'relay4': false,
         'updatedAt': ServerValue.timestamp,
       },
       'notification': {
@@ -128,6 +130,8 @@ class DeviceDataService {
     final defaults = {
       'relay1': false,
       'relay2': false,
+      'relay3': false,
+      'relay4': false,
     };
 
     if (value is! Map) {
@@ -137,6 +141,8 @@ class DeviceDataService {
     return {
       'relay1': _asBool(value['relay1'], defaults['relay1']!),
       'relay2': _asBool(value['relay2'], defaults['relay2']!),
+      'relay3': _asBool(value['relay3'], defaults['relay3']!),
+      'relay4': _asBool(value['relay4'], defaults['relay4']!),
     };
   }
 }
