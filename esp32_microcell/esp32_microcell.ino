@@ -38,6 +38,7 @@ unsigned long lastMillis = 0;
 //====================================================
 float batteryLevel = 85.0;
 float voltage = 12.50;
+float adcVoltage = 12.50;
 float current = 1.20;
 float power = 15.00;
 float temperature = 28.0;
@@ -157,6 +158,7 @@ void loop()
     //==============================
     batteryLevel = constrain(85 + random(-5, 6), 0, 100);
     voltage = 12.4 + random(-20, 21) / 100.0;
+    adcVoltage = voltage;
     current = 1.20 + random(-10, 11) / 100.0;
     power = voltage * current;
     temperature = 28.0 + random(-5, 6) + random(0, 100) / 100.0;
@@ -178,6 +180,12 @@ void loop()
     if (!Firebase.RTDB.setFloat(&fbdo, "/devices/main/status/voltage", voltage))
     {
         Serial.print("Upload Error voltage : ");
+        Serial.println(fbdo.errorReason());
+    }
+
+    if (!Firebase.RTDB.setFloat(&fbdo, "/devices/main/status/adcSensorVoltage", adcVoltage))
+    {
+        Serial.print("Upload Error adcSensorVoltage : ");
         Serial.println(fbdo.errorReason());
     }
 
@@ -335,6 +343,10 @@ void loop()
     Serial.print("Voltage : ");
     Serial.print(voltage);
     Serial.println(" V");
+
+    Serial.print("ADC : ");
+    Serial.print(adcVoltage);
+    Serial.println(" V DC");
 
     Serial.print("Current : ");
     Serial.print(current);

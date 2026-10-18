@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'device_data_service.dart';
+import '../device_data_service.dart';
 
 /// Fungsi-fungsi untuk halaman Dashboard (dashboard_screen.dart)
 class DashboardPageFunctions {
@@ -203,6 +202,8 @@ class DashboardPageFunctions {
     double? batteryLevel,
     double? current,
     double? voltage,
+    double? adcVoltage,
+    double? power,
     double? temperature,
     double? humidity,
     double? acVoltage,
@@ -215,6 +216,8 @@ class DashboardPageFunctions {
       batteryLevel: batteryLevel,
       current: current,
       voltage: voltage,
+      adcVoltage: adcVoltage,
+      power: power,
       temperature: temperature,
       humidity: humidity,
       acVoltage: acVoltage,

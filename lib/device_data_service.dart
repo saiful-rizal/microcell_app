@@ -10,11 +10,15 @@ class DeviceDataService {
   static DatabaseReference get _deviceRef =>
       FirebaseDatabase.instance.ref(devicePath);
 
+  /// Stream data sensor dari `devices/main/sensors` (acs1, ina1, ina2).
+  /// Juga menggabungkan data dari `devices/main/status` untuk weather/location.
   static Stream<DeviceStatus> statusStream() {
     return Stream.fromFuture(AppFirebase.ensureInitialized()).asyncExpand((_) {
-      return _deviceRef.child('status').onValue;
+      return _deviceRef.onValue;
     }).map((event) {
-      return DeviceStatus.fromValue(event.snapshot.value);
+      final value = event.snapshot.value;
+      if (value is! Map) return DeviceStatus.defaults();
+      return DeviceStatus.fromDeviceNode(value);
     });
   }
 
@@ -35,25 +39,54 @@ class DeviceDataService {
     });
   }
 
+  /// Stream pesan notifikasi terbaru yang belum dibaca dari
+  /// `devices/main/notifications` (list push-id sesuai struktur JSON).
+  /// Return null jika tidak ada notifikasi belum dibaca.
   static Stream<String?> notificationStream() {
     return Stream.fromFuture(AppFirebase.ensureInitialized()).asyncExpand((_) {
-      return _deviceRef.child('notification').onValue;
+      return _deviceRef.child('notifications').onValue;
     }).map((event) {
       final value = event.snapshot.value;
-      if (value is Map) {
-        return value['message']?.toString();
+      if (value is! Map) return null;
+
+      Map<dynamic, dynamic>? latest;
+      int latestAt = -1;
+      for (final entry in value.entries) {
+        final v = entry.value;
+        if (v is! Map) continue;
+        if (v['isRead'] == true) continue;
+        final createdAt = v['createdAt'];
+        final at = createdAt is int
+            ? createdAt
+            : int.tryParse('${createdAt ?? ''}') ?? -1;
+        if (at >= latestAt) {
+          latestAt = at;
+          latest = v;
+        }
       }
-      if (value is String) {
-        return value;
-      }
-      return null;
+      return latest?['message']?.toString();
     });
   }
 
+  /// Tandai semua notifikasi belum dibaca sebagai dibaca
+  /// (node `devices/main/notifications` berupa list push-id).
   static Future<void> clearNotification() async {
     await AppFirebase.ensureInitialized();
 
-    return _deviceRef.child('notification').remove();
+    final snapshot = await _deviceRef.child('notifications').get();
+    final value = snapshot.value;
+    if (value is! Map) return;
+
+    final updates = <String, dynamic>{};
+    for (final entry in value.entries) {
+      final v = entry.value;
+      if (v is Map && v['isRead'] != true) {
+        updates['${entry.key}/isRead'] = true;
+      }
+    }
+    if (updates.isNotEmpty) {
+      await _deviceRef.child('notifications').update(updates);
+    }
   }
 
   /// Mengisi data awal ke Firebase Realtime Database jika node belum ada.
@@ -67,18 +100,10 @@ class DeviceDataService {
     if (snapshot.exists) return;
 
     await _deviceRef.set({
-      'status': {
-        'batteryLevel': 85.0,
-        'current': 1.2,
-        'voltage': 12.5,
-        'temperature': 28.0,
-        'humidity': 70.0,
-        'acVoltage': 220.0,
-        'lightIntensity': 570.0,
-        'weatherTemp': 32.0,
-        'weatherDescription': 'Cerah Berawan',
-        'location': 'Bangsalsari, Jember',
-        'updatedAt': ServerValue.timestamp,
+      'sensors': {
+        'acs1': {'current': 0.0, 'voltage': 0.0},
+        'ina1': {'current': 0.0, 'power': 0.0, 'voltage': 0.0},
+        'ina2': {'current': 0.0, 'power': 0.0, 'voltage': 0.0},
       },
       'relays': {
         'relay1': false,
@@ -86,9 +111,6 @@ class DeviceDataService {
         'relay3': false,
         'relay4': false,
         'updatedAt': ServerValue.timestamp,
-      },
-      'notification': {
-        'message': '',
       },
     });
   }
@@ -98,6 +120,8 @@ class DeviceDataService {
     double? batteryLevel,
     double? current,
     double? voltage,
+    double? adcVoltage,
+    double? power,
     double? temperature,
     double? humidity,
     double? acVoltage,
@@ -115,6 +139,8 @@ class DeviceDataService {
     if (batteryLevel != null) updates['batteryLevel'] = batteryLevel;
     if (current != null) updates['current'] = current;
     if (voltage != null) updates['voltage'] = voltage;
+    if (adcVoltage != null) updates['adcSensorVoltage'] = adcVoltage;
+    if (power != null) updates['power'] = power;
     if (temperature != null) updates['temperature'] = temperature;
     if (humidity != null) updates['humidity'] = humidity;
     if (acVoltage != null) updates['acVoltage'] = acVoltage;
@@ -152,6 +178,9 @@ class DeviceStatus {
     required this.batteryLevel,
     required this.current,
     required this.voltage,
+    required this.dcCurrent,
+    required this.dcPower,
+    required this.batteryPowerDc,
     required this.temperature,
     required this.humidity,
     required this.acVoltage,
@@ -162,9 +191,24 @@ class DeviceStatus {
     required this.updatedAt,
   });
 
+  /// Persentase daya baterai (0–100), dihitung dari acs1.voltage
   final double batteryLevel;
+
+  /// Arus listrik dari sensor acs1.current (Ampere)
   final double current;
+
+  /// Voltase baterai dari sensor acs1.voltage (Volt)
   final double voltage;
+
+  /// Arus DC dari sensor ina1.current (Ampere)
+  final double dcCurrent;
+
+  /// Daya Batrai DC dari sensor ina1.voltage (Volt DC)
+  final double dcPower;
+
+  /// Tegangan Batreai DC dari sensor ina1.power (Watt)
+  final double batteryPowerDc;
+
   final double temperature;
   final double humidity;
   final double acVoltage;
@@ -176,9 +220,12 @@ class DeviceStatus {
 
   factory DeviceStatus.defaults() {
     return const DeviceStatus(
-      batteryLevel: 85,
-      current: 1.2,
-      voltage: 12.5,
+      batteryLevel: 0,
+      current: 0,
+      voltage: 0,
+      dcCurrent: 0,
+      dcPower: 0,
+      batteryPowerDc: 0,
       temperature: 15,
       humidity: 75,
       acVoltage: 220,
@@ -190,58 +237,101 @@ class DeviceStatus {
     );
   }
 
-  factory DeviceStatus.fromValue(Object? value) {
+  /// Konversi voltage ACS712 (0–3.3V) ke persentase baterai (0–100%).
+  /// Range tegangan: 0V = 0%, 3.3V = 100%.
+  static double _voltageToBatteryPercent(double voltage) {
+    const double minVoltage = 0.0;
+    const double maxVoltage = 3.3;
+    final clamped = voltage.clamp(minVoltage, maxVoltage);
+    return ((clamped - minVoltage) / (maxVoltage - minVoltage)) * 100;
+  }
+
+  /// Buat DeviceStatus dari seluruh node `devices/main`.
+  /// Membaca data sensor dari `sensors/acs1` dan `sensors/ina1`,
+  /// serta data weather/location dari `status`.
+  factory DeviceStatus.fromDeviceNode(Map<dynamic, dynamic> deviceNode) {
     final fallback = DeviceStatus.defaults();
 
-    if (value is! Map) {
-      return fallback;
-    }
+    // --- Ambil data sensor ---
+    final sensors = deviceNode['sensors'];
+    final acs1 = (sensors is Map) ? sensors['acs1'] : null;
+    final ina1 = (sensors is Map) ? sensors['ina1'] : null;
+
+    // acs1 values
+    final acs1Voltage = _asDouble(
+      (acs1 is Map) ? acs1['voltage'] : null,
+      0.0,
+    );
+    final acs1Current = _asDouble(
+      (acs1 is Map) ? acs1['current'] : null,
+      0.0,
+    );
+
+    // ina1 values
+    final ina1Voltage = _asDouble(
+      (ina1 is Map) ? ina1['voltage'] : null,
+      0.0,
+    );
+    final ina1Current = _asDouble(
+      (ina1 is Map) ? ina1['current'] : null,
+      0.0,
+    );
+    final ina1Power = _asDouble(
+      (ina1 is Map) ? ina1['power'] : null,
+      0.0,
+    );
+
+    // --- Ambil data status (weather, location) ---
+    final status = deviceNode['status'];
+    final statusMap = (status is Map) ? status : <dynamic, dynamic>{};
 
     return DeviceStatus(
-      batteryLevel: _asDouble(
-        _readAny(value, ['batteryLevel', 'battery', 'battery_level']),
-        fallback.batteryLevel,
-      ),
-      current: _asDouble(
-        _readAny(value, ['current', 'arus']),
-        fallback.current,
-      ),
-      voltage: _asDouble(
-        _readAny(value, ['voltage', 'tegangan']),
-        fallback.voltage,
-      ),
+      // 1. Daya Baterai: acs1.voltage → persen
+      batteryLevel: _voltageToBatteryPercent(acs1Voltage),
+      // 2. Tegangan Batreai DC: ina1.power
+      voltage: acs1Voltage,
+      batteryPowerDc: ina1Power,
+      // 3. Daya Batrai DC: ina1.voltage
+      dcPower: ina1Voltage,
+      // 4. Arus DC: ina1.current
+      dcCurrent: ina1Current,
+      // 5. Arus Listrik: acs1.current
+      current: acs1Current,
       temperature: _asDouble(
-        _readAny(value, ['temperature', 'suhu']),
+        _readAny(statusMap, ['temperature', 'suhu']),
         fallback.temperature,
       ),
       humidity: _asDouble(
-        _readAny(value, ['humidity', 'kelembapan']),
+        _readAny(statusMap, ['humidity', 'kelembapan']),
         fallback.humidity,
       ),
       acVoltage: _asDouble(
-        _readAny(value, ['acVoltage', 'ac_voltage']),
+        _readAny(statusMap, ['acVoltage', 'ac_voltage']),
         fallback.acVoltage,
       ),
       lightIntensity: _asDouble(
-        _readAny(value, ['lightIntensity', 'intensity', 'lux']),
+        _readAny(statusMap, ['lightIntensity', 'intensity', 'lux']),
         fallback.lightIntensity,
       ),
       weatherTemp: _asDouble(
-        _readAny(value, ['weatherTemp', 'weather_temp']),
+        _readAny(statusMap, ['weatherTemp', 'weather_temp']),
         fallback.weatherTemp,
       ),
       weatherDescription:
-          _readAny(value, ['weatherDescription', 'weather'])?.toString() ??
+          _readAny(statusMap, ['weatherDescription', 'weather'])?.toString() ??
               fallback.weatherDescription,
-      location: _readAny(value, ['location', 'lokasi'])?.toString() ??
+      location: _readAny(statusMap, ['location', 'lokasi'])?.toString() ??
           fallback.location,
-      updatedAt: _asDateTime(_readAny(value, ['updatedAt', 'updated_at'])),
+      updatedAt: _asDateTime(_readAny(statusMap, ['updatedAt', 'updated_at'])),
     );
   }
 
   int get batteryPercent => batteryLevel.clamp(0, 100).round();
 
   double get batteryFraction => batteryLevel.clamp(0, 100) / 100;
+
+  /// Arus dalam miliAmpere untuk tampilan kartu.
+  double get currentMa => current * 1000;
 }
 
 Object? _readAny(Map<dynamic, dynamic> source, List<String> keys) {

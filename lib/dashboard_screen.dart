@@ -52,11 +52,11 @@ class DashboardScreen extends StatelessWidget {
                     children: [
                       _buildHeader(context, status),
                       if (snapshot.hasError) _buildErrorNotice(),
-                      const SizedBox(height: 35),
+                      const SizedBox(height: 12),
                       _buildBatteryPanel(status),
-                      const SizedBox(height: 45),
+                      const SizedBox(height: 32),
                       _buildStatusGrid(status),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 16),
                     ],
                   ),
                 ),
@@ -76,7 +76,7 @@ class DashboardScreen extends StatelessWidget {
         : 'Budianto';
 
     return Padding(
-      padding: const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 10),
+      padding: const EdgeInsets.only(top: 12, left: 20, right: 20, bottom: 10),
       child: Column(
         children: [
           Row(
@@ -168,7 +168,7 @@ class DashboardScreen extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 14),
           // Glass Card for Location/Weather
           ClipRRect(
             borderRadius: BorderRadius.circular(16),
@@ -176,7 +176,7 @@ class DashboardScreen extends StatelessWidget {
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
@@ -208,7 +208,7 @@ class DashboardScreen extends StatelessWidget {
                       '${_cleanNumber(status.weatherTemp)} °C',
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 42,
+                        fontSize: 32,
                         fontWeight: FontWeight.w900,
                         height: 1.1,
                       ),
@@ -376,25 +376,35 @@ class DashboardScreen extends StatelessWidget {
         childAspectRatio: 2.1,
         children: [
           _MetricCard(
-            icon: Icons.electric_bolt_outlined,
-            title: 'Arus',
-            value: '${_cleanNumber(status.current)} A',
+            icon: Icons.battery_charging_full_outlined,
+            title: 'Tegangan Baterai DC',
+            value: '${_cleanNumber(status.batteryPowerDc, decimals: 1)} mW',
           ),
           _MetricCard(
-            icon: Icons.bolt_outlined,
-            title: 'Tegangan AC',
-            value: '${_cleanNumber(status.acVoltage)} V',
+            icon: Icons.sensors_outlined,
+            title: 'Arus DC',
+            value: '${_cleanNumber(status.dcCurrent)} A',
+          ),
+          _MetricCard(
+            icon: Icons.power_outlined,
+            title: 'Daya Batrai DC',
+            value: '${_cleanNumber(status.dcPower)} V DC',
+          ),
+          _MetricCard(
+            icon: Icons.electric_bolt_outlined,
+            title: 'Arus Listrik',
+            value: '${_cleanNumber(status.current)} A',
           ),
         ],
       ),
     );
   }
 
-  String _cleanNumber(double value) {
+  String _cleanNumber(double value, {int decimals = 2}) {
     if (value % 1 == 0) {
       return value.toStringAsFixed(0);
     }
-    return value.toStringAsFixed(1).replaceAll('.', ',');
+    return value.toStringAsFixed(decimals).replaceAll('.', ',');
   }
 }
 
@@ -439,6 +449,8 @@ class _MetricCard extends StatelessWidget {
               children: [
                 Text(
                   title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontSize: 11,
                     color: Colors.black87,
@@ -447,6 +459,8 @@ class _MetricCard extends StatelessWidget {
                 ),
                 Text(
                   value,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w900,
