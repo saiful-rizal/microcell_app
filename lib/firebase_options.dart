@@ -52,12 +52,12 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAF9iwDBI7cG7oH7sIyR6WLOhZnBeymIQQ',
-    appId: '1:19159557571:android:547f16738408c91f500976',
-    messagingSenderId: '19159557571',
-    projectId: 'microcellapp',
-    databaseURL: 'https://microcellapp-default-rtdb.firebaseio.com',
-    storageBucket: 'microcellapp.firebasestorage.app',
+    apiKey: 'AIzaSyAMWmQ_XVgOWxmj-pWbIrYPNjEAyQD_stg',
+    appId: '1:632751165731:android:897eaa621b749560ec7c96',
+    messagingSenderId: '632751165731',
+    projectId: 'microcell-7daff',
+    databaseURL: 'https://microcell-7daff-default-rtdb.firebaseio.com',
+    storageBucket: 'microcell-7daff.firebasestorage.app',
   );
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAKtvEcIocl3AxFGT4eYWVtZt3_rARPFmo',

@@ -1,52 +1,27 @@
 {
   "project_info": {
-    "project_number": "19159557571",
-    "firebase_url": "https://microcellapp-default-rtdb.firebaseio.com",
-    "project_id": "microcellapp",
-    "storage_bucket": "microcellapp.firebasestorage.app"
+    "project_number": "632751165731",
+    "firebase_url": "https://microcell-7daff-default-rtdb.firebaseio.com",
+    "project_id": "microcell-7daff",
+    "storage_bucket": "microcell-7daff.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:19159557571:android:547f16738408c91f500976",
+        "mobilesdk_app_id": "1:632751165731:android:897eaa621b749560ec7c96",
         "android_client_info": {
           "package_name": "com.example.microcell_app"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "19159557571-uqagd033o60o7tf6vu1ebl3r50gg9p9b.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.microcell_app",
-            "certificate_hash": "3d62cd03333511358284c0626e58ae92c6cedf17"
-          }
-        },
-        {
-          "client_id": "19159557571-a41a4t9s0sghcr7id6hq865vekomnee1.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAF9iwDBI7cG7oH7sIyR6WLOhZnBeymIQQ"
+          "current_key": "AIzaSyAMWmQ_XVgOWxmj-pWbIrYPNjEAyQD_stg"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "19159557571-a41a4t9s0sghcr7id6hq865vekomnee1.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "19159557571-h945mtqdaf7m1mnfjg2so8dmetjid2p9.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.microcellApp"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
