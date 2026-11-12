@@ -22,6 +22,13 @@ class DeviceDataService {
     });
   }
 
+  /// Status koneksi realtime Firebase untuk membedakan offline dari data kosong.
+  static Stream<bool> connectionStream() {
+    return Stream.fromFuture(AppFirebase.ensureInitialized()).asyncExpand((_) {
+      return FirebaseDatabase.instance.ref('.info/connected').onValue;
+    }).map((event) => event.snapshot.value == true);
+  }
+
   static Stream<Map<String, bool>> relayStream() {
     return Stream.fromFuture(AppFirebase.ensureInitialized()).asyncExpand((_) {
       return _deviceRef.child('relays').onValue;
@@ -146,7 +153,8 @@ class DeviceDataService {
     if (acVoltage != null) updates['acVoltage'] = acVoltage;
     if (lightIntensity != null) updates['lightIntensity'] = lightIntensity;
     if (weatherTemp != null) updates['weatherTemp'] = weatherTemp;
-    if (weatherDescription != null) updates['weatherDescription'] = weatherDescription;
+    if (weatherDescription != null)
+      updates['weatherDescription'] = weatherDescription;
     if (location != null) updates['location'] = location;
 
     return _deviceRef.child('status').update(updates);

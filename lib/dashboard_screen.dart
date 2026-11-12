@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -7,8 +8,67 @@ import 'device_data_service.dart';
 import 'navigation.dart';
 import 'notification_screen.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  bool? _previousConnectionState;
+  StreamSubscription<bool>? _connectionSubscription;
+  Timer? _offlineNotificationTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _connectionSubscription =
+        DeviceDataService.connectionStream().listen(_handleConnectionChange);
+  }
+
+  @override
+  void dispose() {
+    _connectionSubscription?.cancel();
+    _offlineNotificationTimer?.cancel();
+    super.dispose();
+  }
+
+  void _handleConnectionChange(bool isConnected) {
+    if (isConnected) {
+      _offlineNotificationTimer?.cancel();
+      _offlineNotificationTimer = null;
+      _previousConnectionState = true;
+      return;
+    }
+
+    if (_previousConnectionState != true || _offlineNotificationTimer != null) {
+      return;
+    }
+
+    _offlineNotificationTimer = Timer(
+      const Duration(seconds: 2),
+      () {
+        _offlineNotificationTimer = null;
+        if (!mounted || _previousConnectionState != true) {
+          return;
+        }
+
+        _previousConnectionState = false;
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Tidak ada koneksi internet. Data terbaru belum tersedia.',
+              ),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.redAccent,
+            ),
+          );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,9 +176,8 @@ class DashboardScreen extends StatelessWidget {
               StreamBuilder<List<AppNotification>>(
                 stream: NotificationService.stream(),
                 builder: (context, snap) {
-                  final unread = (snap.data ?? [])
-                      .where((n) => !n.isRead)
-                      .length;
+                  final unread =
+                      (snap.data ?? []).where((n) => !n.isRead).length;
                   return GestureDetector(
                     onTap: () => Navigator.pushReplacementNamed(
                         context, AppRoutes.notifications),
@@ -144,8 +203,8 @@ class DashboardScreen extends StatelessWidget {
                             child: Container(
                               constraints: const BoxConstraints(
                                   minWidth: 18, minHeight: 18),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 4),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 4),
                               decoration: const BoxDecoration(
                                 color: Colors.red,
                                 shape: BoxShape.circle,
@@ -176,7 +235,8 @@ class DashboardScreen extends StatelessWidget {
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
@@ -475,5 +535,3 @@ class _MetricCard extends StatelessWidget {
     );
   }
 }
-
-
